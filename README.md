@@ -8,7 +8,6 @@ n8n community node for integrating with Miva eCommerce platforms. Provides progr
 
 **Build the package files**
 ```bash
-cd n8n-connector
 npm install
 npm run build
 ```

@@ -5,7 +5,7 @@
     "keywords": [
         "n8n-community-node-package"
     ],
-    "license": "SEE LICENSE IN LICENSE.md",
+    "license": "MIT",
     "homepage": "https://github.com/mivaecommerce/n8n-nodes-miva.git",
     "author": {
         "name": "Developer Support Team",
