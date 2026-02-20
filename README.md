@@ -1,4 +1,4 @@
-# n8n-miva-connector
+# n8n-nodes-miva
 
 n8n community node for integrating with Miva eCommerce platforms. Provides programmatic access to Miva's JSON API for managing products, orders, customers, inventory, and fulfillment operations within n8n workflows.
 
