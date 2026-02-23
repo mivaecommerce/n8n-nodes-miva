@@ -219,6 +219,9 @@ The project uses TypeScript with strict type checking and comprehensive interfac
 
 ## Version History
 
+### v1.0.0
+- Initial stable release
+
 ### v0.1.0
 - Complete Miva API integration with 14 core operations
 - HMAC-SHA256 authentication for all API requests
