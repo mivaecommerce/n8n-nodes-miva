@@ -18,7 +18,7 @@ export async function markReturnsReceived(this: IExecuteFunctions, items: INodeE
 
 		// Validate required fields exist in input data (before any processing)
 		if (items.length === 0) {
-			return [[{ json: { message: 'No input data provided' } }]];
+			return [[{ json: { message: 'No input data provided' }, pairedItem: { item: 0 } }]];
 		}
 
 		const sampleData = items[0].json;
@@ -32,7 +32,8 @@ export async function markReturnsReceived(this: IExecuteFunctions, items: INodeE
 					message: `❌ Cannot mark returns received - missing or invalid fields: ${missingFields.join(', ')}`,
 					missingFields,
 					alert: true
-				}
+				},
+				pairedItem: { item: 0 },
 			}]];
 		}
 
@@ -60,6 +61,7 @@ export async function markReturnsReceived(this: IExecuteFunctions, items: INodeE
 					processed_items: items.length,
 					returns_processed: 0,
 				},
+				pairedItem: { item: 0 },
 			}]];
 		}
 
@@ -72,7 +74,7 @@ export async function markReturnsReceived(this: IExecuteFunctions, items: INodeE
 
 		// Check if API call was successful
 		if (response.success) {
-			// Return success response  
+			// Return success response
 			return [[{
 				json: {
 					success: true,
@@ -82,6 +84,7 @@ export async function markReturnsReceived(this: IExecuteFunctions, items: INodeE
 					return_ids: returnIds,
 					inventory_adjustment: inventoryAdjustment,
 				},
+				pairedItem: { item: 0 },
 			}]];
 		} else {
 			// Return the full API response if not successful
@@ -92,6 +95,7 @@ export async function markReturnsReceived(this: IExecuteFunctions, items: INodeE
 					api_response: JSON.parse(JSON.stringify(response)),
 					return_ids: returnIds,
 				},
+				pairedItem: { item: 0 },
 			}]];
 		}
 
@@ -99,6 +103,7 @@ export async function markReturnsReceived(this: IExecuteFunctions, items: INodeE
 		if (this.continueOnFail()) {
 			return [[{
 				json: { error: error.message || 'Unknown error occurred' },
+				pairedItem: { item: 0 },
 			}]];
 		} else {
 			throw new NodeOperationError(this.getNode(), error);

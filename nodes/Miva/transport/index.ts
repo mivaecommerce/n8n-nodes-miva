@@ -88,28 +88,25 @@ export async function mivaApiRequest(
 /**
  * Download image from URL and convert to base64
  */
-export async function downloadImageToBase64(imageUrl: string): Promise<string> {
+export async function downloadImageToBase64(this: IExecuteFunctions, imageUrl: string): Promise<string> {
 	try {
-		const response = await fetch(imageUrl, {
+		const response = await this.helpers.httpRequest({
 			method: 'GET',
+			url: imageUrl,
 			headers: {
-				'User-Agent': 'n8n-miva-image-uploader/1.0'
-			}
+				'User-Agent': 'n8n-miva-image-uploader/1.0',
+			},
+			encoding: 'arraybuffer',
+			returnFullResponse: true,
 		});
 
-		if (!response.ok) {
-			throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-		}
+		const contentType = ((response.headers?.['content-type'] as string) ?? '');
 
-		const contentType = response.headers.get('content-type');
-		
-		if (!contentType || !contentType.startsWith('image/')) {
+		if (!contentType.startsWith('image/')) {
 			throw new Error(`Invalid content type: ${contentType}. Expected image/*`);
 		}
 
-		const arrayBuffer = await response.arrayBuffer();
-		const imageBuffer = Buffer.from(arrayBuffer);
-		return imageBuffer.toString('base64');
+		return Buffer.from(response.body as ArrayBuffer).toString('base64');
 	} catch (error) {
 		throw new Error(`Failed to download image from ${imageUrl}: ${error.message}`);
 	}
@@ -153,7 +150,7 @@ export async function uploadImageToMiva(
 	
 	try {
 		// Download and convert image
-		const base64Image = await downloadImageToBase64(imageUrl);
+		const base64Image = await downloadImageToBase64.call(this, imageUrl);
 		const filename = extractFilenameFromUrl(imageUrl);
 		
 		// Generate Miva file path

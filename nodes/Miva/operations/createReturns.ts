@@ -15,7 +15,7 @@ export async function createReturns(this: IExecuteFunctions, items: INodeExecuti
 
 		// Validate required fields exist in input data (before any processing)
 		if (items.length === 0) {
-			return [[{ json: { message: 'No input data provided' } }]];
+			return [[{ json: { message: 'No input data provided' }, pairedItem: { item: 0 } }]];
 		}
 
 		const sampleData = items[0].json;
@@ -31,7 +31,8 @@ export async function createReturns(this: IExecuteFunctions, items: INodeExecuti
 					message: `❌ Cannot process returns - missing or invalid fields: ${missingFields.join(', ')}`,
 					missingFields,
 					alert: true
-				}
+				},
+				pairedItem: { item: 0 },
 			}]];
 		}
 
@@ -64,6 +65,7 @@ export async function createReturns(this: IExecuteFunctions, items: INodeExecuti
 					processed_items: items.length,
 					returns_created: 0,
 				},
+				pairedItem: { item: 0 },
 			}]];
 		}
 
@@ -86,6 +88,7 @@ export async function createReturns(this: IExecuteFunctions, items: INodeExecuti
 							line_id: lineId,
 							return_id: response.data?.id,
 						},
+						pairedItem: { item: 0 },
 					});
 				});
 
@@ -98,6 +101,7 @@ export async function createReturns(this: IExecuteFunctions, items: INodeExecuti
 							line_id: lineId,
 							error: error.message || 'Failed to create return',
 						},
+						pairedItem: { item: 0 },
 					});
 				});
 			}
@@ -112,6 +116,7 @@ export async function createReturns(this: IExecuteFunctions, items: INodeExecuti
 					success: false,
 					error: error.message || 'Unknown error occurred',
 				},
+				pairedItem: { item: 0 },
 			}]];
 		}
 		throw new NodeOperationError(this.getNode(), error.message || 'Unknown error occurred');

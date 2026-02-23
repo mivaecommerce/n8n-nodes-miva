@@ -8,7 +8,7 @@ export async function reportLowInventory(this: IExecuteFunctions, items: INodeEx
 	const thresholdField = this.getNodeParameter('thresholdField', 0) as string;
 	
 	if (items.length === 0) {
-		return [[{ json: { message: 'No input data provided' } }]];
+		return [[{ json: { message: 'No input data provided' }, pairedItem: { item: 0 } }]];
 	}
 
 	// Check if required fields exist in the data (using first row as sample)
@@ -25,7 +25,8 @@ export async function reportLowInventory(this: IExecuteFunctions, items: INodeEx
 				message: `❌ Cannot check stock - missing required fields: ${missingFields.join(', ')}`,
 				missingFields,
 				alert: true
-			}
+			},
+			pairedItem: { item: 0 },
 		}]];
 	}
 
@@ -58,5 +59,6 @@ export async function reportLowInventory(this: IExecuteFunctions, items: INodeEx
 			lowStockCount: lowStockItems.length,
 			alert: lowStockItems.length > 0
 		},
+		pairedItem: { item: 0 },
 	}]];
 } 

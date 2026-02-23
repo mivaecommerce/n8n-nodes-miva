@@ -21,7 +21,7 @@ export async function createShipment(this: IExecuteFunctions, items: INodeExecut
 
 		// Validate required fields exist in input data (before any processing)
 		if (items.length === 0) {
-			return [[{ json: { message: 'No input data provided' } }]];
+			return [[{ json: { message: 'No input data provided' }, pairedItem: { item: 0 } }]];
 		}
 
 		const sampleData = items[0].json;
@@ -37,7 +37,8 @@ export async function createShipment(this: IExecuteFunctions, items: INodeExecut
 					message: `❌ Cannot process shipments - missing or invalid fields: ${missingFields.join(', ')}`,
 					missingFields,
 					alert: true
-				}
+				},
+				pairedItem: { item: 0 },
 			}]];
 		}
 
@@ -71,6 +72,7 @@ export async function createShipment(this: IExecuteFunctions, items: INodeExecut
 					processed_items: items.length,
 					shipments_created: 0,
 				},
+				pairedItem: { item: 0 },
 			}]];
 		}
 
@@ -133,6 +135,7 @@ export async function createShipment(this: IExecuteFunctions, items: INodeExecut
 		// Return all results (both successful and failed shipments)
 		const returnData = results.map(result => ({
 			json: result,
+			pairedItem: { item: 0 },
 		}));
 
 		return [returnData];
@@ -141,6 +144,7 @@ export async function createShipment(this: IExecuteFunctions, items: INodeExecut
 		if (this.continueOnFail()) {
 			return [[{
 				json: { error: error.message || 'Unknown error occurred' },
+				pairedItem: { item: 0 },
 			}]];
 		} else {
 			throw new NodeOperationError(this.getNode(), error);

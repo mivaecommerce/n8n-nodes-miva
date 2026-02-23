@@ -23,7 +23,7 @@ export async function updateShipments(this: IExecuteFunctions, items: INodeExecu
 
 		// Validate required fields exist in input data (before any processing)
 		if (items.length === 0) {
-			return [[{ json: { message: 'No input data provided' } }]];
+			return [[{ json: { message: 'No input data provided' }, pairedItem: { item: 0 } }]];
 		}
 
 		const sampleData = items[0].json;
@@ -37,7 +37,8 @@ export async function updateShipments(this: IExecuteFunctions, items: INodeExecu
 					message: `❌ Cannot update shipments - missing required fields: ${missingFields.join(', ')}`,
 					missingFields,
 					alert: true
-				}
+				},
+				pairedItem: { item: 0 },
 			}]];
 		}
 
@@ -90,6 +91,7 @@ export async function updateShipments(this: IExecuteFunctions, items: INodeExecu
 					processed_items: items.length,
 					shipments_updated: 0,
 				},
+				pairedItem: { item: 0 },
 			}]];
 		}
 
@@ -108,12 +110,14 @@ export async function updateShipments(this: IExecuteFunctions, items: INodeExecu
 				shipments_updated: shipmentUpdates.length,
 				shipment_ids: shipmentUpdates.map(update => update.shpmnt_id),
 			},
+			pairedItem: { item: 0 },
 		}]];
 
 	} catch (error) {
 		if (this.continueOnFail()) {
 			return [[{
 				json: { error: error.message || 'Unknown error occurred' },
+				pairedItem: { item: 0 },
 			}]];
 		} else {
 			throw new NodeOperationError(this.getNode(), error);

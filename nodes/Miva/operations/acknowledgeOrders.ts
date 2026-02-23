@@ -17,7 +17,7 @@ export async function acknowledgeOrders(this: IExecuteFunctions, items: INodeExe
 
 		// Validate required fields exist in input data (before any processing)
 		if (items.length === 0) {
-			return [[{ json: { message: 'No input data provided' } }]];
+			return [[{ json: { message: 'No input data provided' }, pairedItem: { item: 0 } }]];
 		}
 
 		const sampleData = items[0].json;
@@ -31,7 +31,8 @@ export async function acknowledgeOrders(this: IExecuteFunctions, items: INodeExe
 					message: `❌ Cannot acknowledge orders - missing required fields: ${missingFields.join(', ')}`,
 					missingFields,
 					alert: true
-				}
+				},
+				pairedItem: { item: 0 },
 			}]];
 		}
 
@@ -62,6 +63,7 @@ export async function acknowledgeOrders(this: IExecuteFunctions, items: INodeExe
 					processed_items: items.length,
 					orders_acknowledged: 0,
 				},
+				pairedItem: { item: 0 },
 			}]];
 		}
 
@@ -78,19 +80,21 @@ export async function acknowledgeOrders(this: IExecuteFunctions, items: INodeExe
 			json: {
 				success: Boolean(response.success),
 				processed: Boolean(response.processed),
-				message: response.processed 
+				message: response.processed
 					? `Successfully acknowledged ${orderIds.length} orders`
 					: 'Request was successful but no orders were processed',
 				processed_items: items.length,
 				orders_acknowledged: response.processed ? orderIds.length : 0,
 				order_ids: orderIds,
 			},
+			pairedItem: { item: 0 },
 		}]];
 
 	} catch (error) {
 		if (this.continueOnFail()) {
 			return [[{
 				json: { error: error.message || 'Unknown error occurred' },
+				pairedItem: { item: 0 },
 			}]];
 		} else {
 			throw new NodeOperationError(this.getNode(), error);

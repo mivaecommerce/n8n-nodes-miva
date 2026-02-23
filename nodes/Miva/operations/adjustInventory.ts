@@ -16,7 +16,7 @@ export async function adjustInventory(this: IExecuteFunctions, items: INodeExecu
 
 		// Validate required fields exist in input data (before any processing)
 		if (items.length === 0) {
-			return [[{ json: { message: 'No input data provided' } }]];
+			return [[{ json: { message: 'No input data provided' }, pairedItem: { item: 0 } }]];
 		}
 
 		const sampleData = items[0].json;
@@ -31,7 +31,8 @@ export async function adjustInventory(this: IExecuteFunctions, items: INodeExecu
 					message: `❌ Cannot adjust inventory - missing or invalid fields: ${missingFields.join(', ')}`,
 					missingFields,
 					alert: true
-				}
+				},
+				pairedItem: { item: 0 },
 			}]];
 		}
 
@@ -72,6 +73,7 @@ export async function adjustInventory(this: IExecuteFunctions, items: INodeExecu
 				processed_items: items.length,
 				adjustments_made: 0,
 			},
+			pairedItem: { item: 0 },
 		}]];
 	}
 
@@ -91,15 +93,17 @@ export async function adjustInventory(this: IExecuteFunctions, items: INodeExecu
 			skipped_items: items.length - allAdjustments.length,
 			storeCode,
 		},
+		pairedItem: { item: 0 },
 	}]];
 
 	} catch (error) {
 		if (this.continueOnFail()) {
 			return [[{
-				json: { 
+				json: {
 					error: error.message || 'Unknown error occurred',
 					operation: 'adjustInventory',
 				},
+				pairedItem: { item: 0 },
 			}]];
 		} else {
 			throw new NodeOperationError(this.getNode(), error);
