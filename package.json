@@ -1,6 +1,6 @@
 {
   "name": "@mivalabs/n8n-nodes-miva",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "n8n node to interact with Miva eCommerce API",
   "keywords": [
     "n8n-community-node-package"
