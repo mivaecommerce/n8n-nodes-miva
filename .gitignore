@@ -1,2 +1,12 @@
-node_modules/
-tsconfig.tsbuildinfo
+node_modules
+.DS_Store
+.tmp
+tmp
+dist
+npm-debug.log*
+yarn.lock
+.claude/*
+.vscode/*
+.cursor/
+.cursor/*
+
