@@ -22,7 +22,7 @@ export async function reportLowInventory(this: IExecuteFunctions, items: INodeEx
 	if (missingFields.length > 0) {
 		return [[{
 			json: {
-				message: `❌ Cannot check stock - missing required fields: ${missingFields.join(', ')}`,
+				message: `Cannot check stock - missing required fields: ${missingFields.join(', ')}`,
 				missingFields,
 				alert: true
 			},
@@ -49,9 +49,9 @@ export async function reportLowInventory(this: IExecuteFunctions, items: INodeEx
 	}
 
 	// Build result message
-	const message = lowStockItems.length > 0 
-		? `🚨 Low Stock Alert:\n• ${lowStockItems.join('\n• ')}`
-		: '✅ All items are in stock';
+	const message = lowStockItems.length > 0
+		? `Low Stock Alert:\n- ${lowStockItems.join('\n- ')}`
+		: 'All items are in stock';
 
 	return [[{
 		json: {

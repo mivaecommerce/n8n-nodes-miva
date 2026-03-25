@@ -28,7 +28,7 @@ export async function acknowledgeOrders(this: IExecuteFunctions, items: INodeExe
 		if (missingFields.length > 0) {
 			return [[{
 				json: {
-					message: `❌ Cannot acknowledge orders - missing required fields: ${missingFields.join(', ')}`,
+					message: `Cannot acknowledge orders - missing required fields: ${missingFields.join(', ')}`,
 					missingFields,
 					alert: true
 				},

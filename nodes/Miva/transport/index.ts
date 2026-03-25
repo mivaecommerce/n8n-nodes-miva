@@ -1,6 +1,6 @@
 import { createHmac } from 'crypto';
-import type { IExecuteFunctions, IDataObject } from 'n8n-workflow';
-import { NodeOperationError } from 'n8n-workflow';
+import type { IExecuteFunctions, IDataObject, JsonObject } from 'n8n-workflow';
+import { NodeApiError, NodeOperationError } from 'n8n-workflow';
 import type { MivaApiResponse, MivaApiRequestBody } from '../types';
 import { PRODUCT_ONDEMAND_COLUMNS, ORDER_ONDEMAND_COLUMNS } from '../parameters';
 
@@ -76,10 +76,7 @@ export async function mivaApiRequest(
 	});
 
 	if (!response.success) {
-		throw new NodeOperationError(
-			this.getNode(),
-			`Miva API Error: ${JSON.stringify(response) || 'Unknown error'}`,
-		);
+		throw new NodeApiError(this.getNode(), response as unknown as JsonObject);
 	}
 
 	return response;
@@ -168,8 +165,6 @@ export async function uploadImageToMiva(
 			Store_Code: storeCode
 		});
 		
-		this.logger.info(`Miva Provision_Store Response: ${JSON.stringify(step1Response, null, 2)}`);
-
 		// Step 2: Associate image with product using ProductImage_Add
 		const productParams: IDataObject = {
 			[identifierType]: productIdentifier,
@@ -180,11 +175,9 @@ export async function uploadImageToMiva(
 
 		const step2Response = await mivaApiRequest.call(this, 'ProductImage_Add', productParams);
 		
-		this.logger.info(`Miva ProductImage_Add Response: ${JSON.stringify(step2Response, null, 2)}`);
-
-		return { 
-			success: true, 
-			mivaFilePath 
+		return {
+			success: true,
+			mivaFilePath
 		};
 
 	} catch (error) {
@@ -220,9 +213,7 @@ export async function deleteProductImageFromMiva(
 			Store_Code: storeCode
 		});
 
-		this.logger.info(`Miva ProductImage_Delete Response: ${JSON.stringify(response, null, 2)}`);
-
-		return { 
+		return {
 			success: true
 		};
 

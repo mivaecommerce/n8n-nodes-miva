@@ -8,6 +8,7 @@ import { validateStoreCode } from '../utils';
  * Processes each input item individually to create product information.
  */
 export async function insertProduct(this: IExecuteFunctions, itemIndex: number): Promise<IDataObject[]> {
+	try {
 	const storeCode = this.getNodeParameter('storeCode', itemIndex) as string;
 	const productCodeField = this.getNodeParameter('productCodeField', itemIndex) as string;
 	const productNameField = this.getNodeParameter('productNameField', itemIndex) as string;
@@ -132,4 +133,12 @@ export async function insertProduct(this: IExecuteFunctions, itemIndex: number):
 		success_message: response.success ? 'Product created successfully' : 'Product creation failed',
 		product_code: productCode,
 	}];
+
+	} catch (error) {
+		if (this.continueOnFail()) {
+			return [{ error: error.message || 'Unknown error occurred', operation: 'insertProduct' }];
+		} else {
+			throw new NodeOperationError(this.getNode(), error);
+		}
+	}
 }

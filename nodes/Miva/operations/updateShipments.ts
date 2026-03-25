@@ -34,7 +34,7 @@ export async function updateShipments(this: IExecuteFunctions, items: INodeExecu
 		if (missingFields.length > 0) {
 			return [[{
 				json: {
-					message: `❌ Cannot update shipments - missing required fields: ${missingFields.join(', ')}`,
+					message: `Cannot update shipments - missing required fields: ${missingFields.join(', ')}`,
 					missingFields,
 					alert: true
 				},

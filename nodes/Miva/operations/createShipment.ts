@@ -34,7 +34,7 @@ export async function createShipment(this: IExecuteFunctions, items: INodeExecut
 		if (missingFields.length > 0) {
 			return [[{
 				json: {
-					message: `❌ Cannot process shipments - missing or invalid fields: ${missingFields.join(', ')}`,
+					message: `Cannot process shipments - missing or invalid fields: ${missingFields.join(', ')}`,
 					missingFields,
 					alert: true
 				},

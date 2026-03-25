@@ -8,6 +8,7 @@ import { validateStoreCode } from '../utils';
  * Processes each input item individually to update product information.
  */
 export async function updateProduct(this: IExecuteFunctions, itemIndex: number): Promise<IDataObject[]> {
+	try {
 	const storeCode = this.getNodeParameter('storeCode', itemIndex) as string;
 	const productIdentifierField = this.getNodeParameter('productIdentifierField', itemIndex) as string;
 	const productIdentifierType = this.getNodeParameter('productIdentifierType', itemIndex) as string;
@@ -157,4 +158,12 @@ export async function updateProduct(this: IExecuteFunctions, itemIndex: number):
 		success_message: response.success ? 'Product updated successfully' : 'Product update failed',
 		product_identifier: productIdentifier,
 	}];
-} 
+
+	} catch (error) {
+		if (this.continueOnFail()) {
+			return [{ error: error.message || 'Unknown error occurred', operation: 'updateProduct' }];
+		} else {
+			throw new NodeOperationError(this.getNode(), error);
+		}
+	}
+}

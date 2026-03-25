@@ -29,7 +29,7 @@ export async function markReturnsReceived(this: IExecuteFunctions, items: INodeE
 		if (missingFields.length > 0) {
 			return [[{
 				json: {
-					message: `❌ Cannot mark returns received - missing or invalid fields: ${missingFields.join(', ')}`,
+					message: `Cannot mark returns received - missing or invalid fields: ${missingFields.join(', ')}`,
 					missingFields,
 					alert: true
 				},

@@ -28,7 +28,7 @@ export async function createReturns(this: IExecuteFunctions, items: INodeExecuti
 		if (missingFields.length > 0) {
 			return [[{
 				json: {
-					message: `❌ Cannot process returns - missing or invalid fields: ${missingFields.join(', ')}`,
+					message: `Cannot process returns - missing or invalid fields: ${missingFields.join(', ')}`,
 					missingFields,
 					alert: true
 				},

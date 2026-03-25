@@ -28,7 +28,7 @@ export async function adjustInventory(this: IExecuteFunctions, items: INodeExecu
 		if (missingFields.length > 0) {
 			return [[{
 				json: {
-					message: `❌ Cannot adjust inventory - missing or invalid fields: ${missingFields.join(', ')}`,
+					message: `Cannot adjust inventory - missing or invalid fields: ${missingFields.join(', ')}`,
 					missingFields,
 					alert: true
 				},

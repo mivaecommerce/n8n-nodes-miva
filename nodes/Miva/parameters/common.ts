@@ -5,8 +5,13 @@ export const OPERATION_PARAMETER: INodeProperties = {
 	name: 'operation',
 	type: 'options',
 	noDataExpression: true,
-	// eslint-disable-next-line n8n-nodes-base/node-param-options-type-unsorted-items
 	options: [
+		{
+			name: 'Acknowledge Orders',
+			value: 'acknowledgeOrders',
+			description: 'Mark orders as received in the order workflow system',
+			action: 'Acknowledge orders as received',
+		},
 		{
 			name: 'Adjust Inventory',
 			value: 'adjustInventory',
@@ -50,18 +55,6 @@ export const OPERATION_PARAMETER: INodeProperties = {
 			action: 'Get product data',
 		},
 		{
-			name: 'Acknowledge Orders',
-			value: 'acknowledgeOrders',
-			description: 'Mark orders as received in the order workflow system',
-			action: 'Acknowledge orders as received',
-		},
-		{
-			name: 'Update Product',
-			value: 'updateProduct',
-			description: 'Update product information',
-			action: 'Update product details',
-		},
-		{
 			name: 'Insert Product',
 			value: 'insertProduct',
 			description: 'Create a new product',
@@ -78,6 +71,12 @@ export const OPERATION_PARAMETER: INodeProperties = {
 			value: 'reportLowInventory',
 			description: 'Generate low inventory alert message',
 			action: 'Generate low inventory alert message',
+		},
+		{
+			name: 'Update Product',
+			value: 'updateProduct',
+			description: 'Update product information',
+			action: 'Update product details',
 		},
 		{
 			name: 'Update Shipments',
