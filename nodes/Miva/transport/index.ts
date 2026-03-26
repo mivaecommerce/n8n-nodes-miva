@@ -1,43 +1,7 @@
-import { createHmac } from 'crypto';
 import type { IExecuteFunctions, IDataObject, JsonObject } from 'n8n-workflow';
-import { NodeApiError, NodeOperationError } from 'n8n-workflow';
+import { NodeApiError } from 'n8n-workflow';
 import type { MivaApiResponse, MivaApiRequestBody } from '../types';
 import { PRODUCT_ONDEMAND_COLUMNS, ORDER_ONDEMAND_COLUMNS } from '../parameters';
-
-/**
- * Generate HMAC signature for Miva API authentication
- */
-function generateHMACSignature(
-	jsonData: string,
-	signingKey: string,
-	algorithm: string = 'sha256'
-): string {
-	// Step 1: Base64 decode the signing key
-	const decodedKey = Buffer.from(signingKey, 'base64');
-	
-	// Step 2: Generate HMAC with the specified algorithm
-	const signature = createHmac(algorithm, decodedKey)
-		.update(jsonData, 'utf8')
-		.digest();
-	
-	// Step 3: Base64 encode the result
-	return signature.toString('base64');
-}
-
-/**
- * Generate the X-Miva-API-Authorization header with HMAC signature
- */
-function generateAuthHeader(
-	apiToken: string,
-	jsonData: string,
-	signingKey: string,
-	algorithm: string = 'sha256'
-): string {
-	// Generate HMAC signature
-	const signature = generateHMACSignature(jsonData, signingKey, algorithm);
-	const headerType = `MIVA-HMAC-${algorithm.toUpperCase()}`;
-	return `${headerType} ${apiToken}:${signature}`;
-}
 
 export async function mivaApiRequest(
 	this: IExecuteFunctions,
@@ -53,27 +17,22 @@ export async function mivaApiRequest(
 		...additionalParams,
 	};
 
-	// Convert request body to JSON string for HMAC signing
+	// Serialize here so the credential authenticate function signs the exact same bytes
 	const jsonData = JSON.stringify(requestBody);
 
-	// Generate HMAC authentication header
-	const authHeader = generateAuthHeader(
-		credentials.apiToken as string,
-		jsonData,
-		credentials.signingKey as string,
-		'sha256'
-	);
-
-	const response = await this.helpers.httpRequest({
-		method: 'POST',
-		url: credentials.baseUrl as string,
-		headers: {
-			'X-Miva-API-Authorization': authHeader,
-			'Content-Type': 'application/json',
-			'Accept': '*/*',
+	const response = await this.helpers.httpRequestWithAuthentication.call(
+		this,
+		'mivaApi',
+		{
+			method: 'POST',
+			url: credentials.baseUrl as string,
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': '*/*',
+			},
+			body: jsonData,
 		},
-		body: jsonData,
-	});
+	);
 
 	if (!response.success) {
 		throw new NodeApiError(this.getNode(), response as unknown as JsonObject);
@@ -160,7 +119,7 @@ export async function uploadImageToMiva(
 		// Step 1: Upload image file using Provision_Store
 		const imageAddXml = `<Image_Add encoding="base64" filepath="${mivaFilePath}"><![CDATA[${base64Image}]]></Image_Add>`;
 		
-		const step1Response = await mivaApiRequest.call(this, 'Provision_Store', {
+		await mivaApiRequest.call(this, 'Provision_Store', {
 			xml: imageAddXml,
 			Store_Code: storeCode
 		});
@@ -173,7 +132,7 @@ export async function uploadImageToMiva(
 			Store_Code: storeCode
 		};
 
-		const step2Response = await mivaApiRequest.call(this, 'ProductImage_Add', productParams);
+		await mivaApiRequest.call(this, 'ProductImage_Add', productParams);
 		
 		return {
 			success: true,
@@ -208,7 +167,7 @@ export async function deleteProductImageFromMiva(
 	storeCode: string
 ): Promise<{ success: boolean; error?: string; mivaResponse?: string }> {
 	try {
-		const response = await mivaApiRequest.call(this, 'ProductImage_Delete', {
+		await mivaApiRequest.call(this, 'ProductImage_Delete', {
 			ProductImage_ID: parseInt(productImageId, 10),
 			Store_Code: storeCode
 		});

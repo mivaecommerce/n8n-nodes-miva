@@ -1,6 +1,8 @@
-import {
+import { createHmac } from 'crypto';
+import type {
 	ICredentialTestRequest,
 	ICredentialType,
+	IHttpRequestOptions,
 	INodeProperties,
 } from 'n8n-workflow';
 
@@ -42,6 +44,30 @@ export class MivaApi implements ICredentialType {
 		},
 	];
 
+	authenticate = async (
+		credentials: Record<string, unknown>,
+		requestOptions: IHttpRequestOptions,
+	): Promise<IHttpRequestOptions> => {
+		const bodyStr =
+			typeof requestOptions.body === 'string'
+				? requestOptions.body
+				: JSON.stringify(requestOptions.body);
+
+		const decodedKey = Buffer.from(credentials.signingKey as string, 'base64');
+		const signature = createHmac('sha256', decodedKey)
+			.update(bodyStr, 'utf8')
+			.digest('base64');
+
+		const authHeader = `MIVA-HMAC-SHA256 ${credentials.apiToken as string}:${signature}`;
+
+		requestOptions.headers = {
+			...requestOptions.headers,
+			'X-Miva-API-Authorization': authHeader,
+		};
+
+		return requestOptions;
+	};
+
 	test: ICredentialTestRequest = {
 		request: {
 			method: 'POST',
@@ -55,4 +81,4 @@ export class MivaApi implements ICredentialType {
 			},
 		},
 	};
-} 
+}
