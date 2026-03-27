@@ -10,6 +10,7 @@ export class MivaApi implements ICredentialType {
 	name = 'mivaApi';
 	displayName = 'Miva API';
 	documentationUrl = 'https://docs.miva.com/json-api';
+	icon = 'file:miva.svg' as const;
 
 	properties: INodeProperties[] = [
 		{

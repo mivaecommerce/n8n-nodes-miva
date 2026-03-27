@@ -1,5 +1,5 @@
 {
-	"node": "n8n-nodes-base.miva",
+	"node": "@mivalabs/n8n-nodes-miva.miva",
 	"nodeVersion": "1.0",
 	"codexVersion": "1.0",
 	"categories": [
