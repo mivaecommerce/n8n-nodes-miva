@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.5] - 2026-03-26
+## [1.0.6] - 2026-03-27
 
 ### Fixed
 - `updateProduct` and `insertProduct` operations now wrap their function bodies in `try/catch` with `continueOnFail()` handling, consistent with `acknowledgeOrders` and `adjustInventory`. Previously, any error in these operations would halt the entire workflow regardless of the node's "Continue On Error" setting.
