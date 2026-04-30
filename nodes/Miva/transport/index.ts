@@ -116,11 +116,10 @@ export async function uploadImageToMiva(
 			.replace('{product_sku}', productIdentifier)
 			.replace('{filename}', filename);
 
-		// Step 1: Upload image file using Provision_Store
-		const imageAddXml = `<Image_Add encoding="base64" filepath="${mivaFilePath}"><![CDATA[${base64Image}]]></Image_Add>`;
-		
-		await mivaApiRequest.call(this, 'Provision_Store', {
-			xml: imageAddXml,
+		// Step 1: Upload image file using Image_Add
+		await mivaApiRequest.call(this, 'Image_Add', {
+			Filepath: mivaFilePath,
+			Image_Data: base64Image,
 			Store_Code: storeCode
 		});
 		

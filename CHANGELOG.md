@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.7] - 2026-04-30
+
+### Changed
+- Replaced `Provision_Store` + XML `Image_Add` with the native `Image_Add` JSON API function in `uploadImageToMiva()` (`transport/index.ts`). The new function accepts a `Filepath` and `Image_Data` (base64) parameter directly, eliminating the XML envelope wrapper and aligning with the current Miva JSON API.
+
 ## [1.0.6] - 2026-03-27
 
 ### Fixed
